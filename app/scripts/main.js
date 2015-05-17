@@ -12,7 +12,7 @@ var wabbitTexture;
 var pirateTexture;
 
 var balls = [];
-var gravity = 0.5 ;
+var gravity = 9.5 ;
 
 var maxX = width;
 var minX = 0;
@@ -23,6 +23,10 @@ var startballCount = 3;
 var isAdding = false;
 var count = 0;
 var container;
+
+var lastTime = (new Date()).getTime();
+var currentTime = 0;
+var delta = 0;
 
 
 var amount = 10;
@@ -168,6 +172,8 @@ function resize()
 
 function update()
 {
+	currentTime = (new Date()).getTime();
+    delta = (currentTime - lastTime) / 1000;
 	stats.begin();
 	myTree.clear();
 	if(isAdding)
@@ -194,6 +200,7 @@ function update()
 	renderer.render(container);
 	requestAnimationFrame(update);
 	stats.end();
+	lastTime = currentTime;
 	
 }
 
