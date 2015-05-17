@@ -12,7 +12,7 @@ var wabbitTexture;
 var pirateTexture;
 
 var balls = [];
-var gravity = 9.5 ;
+var gravity = 19.5 ;
 
 var maxX = width;
 var minX = 0;
@@ -217,7 +217,7 @@ var checkCollision = function(circle1, circle2) {
 
 	//http://simonpstevens.com/articles/vectorcollisionphysics
 var collide = function(c1, c2, d) {
-	if (d < 3) {return}
+	if (d < 1) {return}
 	var cd = c1.r + c2.r;
 	var msac = moveToCollisionPoint(c1, c2, d, cd)
 	var norm = [(c1.x - c2.x)/d, (c1.y - c2.y)/d];
@@ -273,11 +273,11 @@ var moveToCollisionPoint = function(c1, c2, d, cd) {
 	var mstc = delta * pdtc;
 	var msac = delta * pdac;
 
-	c1.x = c1s_x + c1.speedX * mstc;
-	c1.y = c1s_y + c1.speedY * mstc;
+	// c1.x = c1s_x + c1.speedX * mstc;
+	// c1.y = c1s_y + c1.speedY * mstc;
 
-	c2.x = c2s_x + c2.speedX * mstc;
-	c2.y = c2s_y + c2.speedY * mstc;
+	// c2.x = c2s_x + c2.speedX * mstc;
+	// c2.y = c2s_y + c2.speedY * mstc;
 
 	return msac;
 

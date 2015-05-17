@@ -42,8 +42,7 @@ Ball.prototype.update = function() {
 	{
 		this.speedY *= -0.85;
 		this.position.y = maxY;
-		// this.spin = (Math.random()-0.5) * 0.2
-		if (Math.random() > 0.5)
+		if (Math.random() > 0.3)
 		{
 			this.speedY -= Math.random() * 6;
 		}
@@ -57,7 +56,7 @@ Ball.prototype.update = function() {
 }
 
 Ball.prototype.limitSpeed = function() {
-	var max = 50;
+	var max = 250;
 	if (this.speedX > max) {
 		this.speedX = max;
 	}
