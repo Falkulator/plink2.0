@@ -1,14 +1,14 @@
 function Ball(x,y,r) {
 	PIXI.Sprite.call(this, balltex);
 	
-	this.x = x + Math.random() * 150;
-	this.y = y + Math.random() * 150;
+	this.x = x + Math.random() * 350;
+	this.y = y + Math.random() * 350;
 	this.width = r*2;
 	this.height = r*2;
 	this.r = r;
 	this.m = 10;
-	this.speedX = 5 + Math.random() * 5;
-	this.speedY = 5 + Math.random() * 5;
+	this.speedX = -15 + Math.random() * 30;
+	this.speedY = -15 + Math.random() * 30;
 	
 	this.anchor.x = 0.5;
 	this.anchor.y = 0.5;
@@ -22,11 +22,11 @@ Ball.prototype.cunstructor = Ball;
 
 Ball.prototype.update = function() {
 
-	//this.limitSpeed();
+	
 	this.position.x += this.speedX * delta;
 	this.position.y += this.speedY * delta;
 	this.speedY += gravity * delta;
-	
+	this.limitSpeed();
 	if (this.position.x > maxX)
 	{
 		this.speedX *= -0.85;
@@ -57,7 +57,7 @@ Ball.prototype.update = function() {
 }
 
 Ball.prototype.limitSpeed = function() {
-	var max = 18;
+	var max = 50;
 	if (this.speedX > max) {
 		this.speedX = max;
 	}

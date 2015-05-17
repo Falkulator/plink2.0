@@ -210,17 +210,16 @@ var checkCollision = function(circle1, circle2) {
 	var distance = Math.sqrt(dx * dx + dy * dy);
 
 	if (distance < circle1.r+ circle2.r) {
-		calcMomentum(circle1, circle2, distance);
+		collide(circle1, circle2, distance);
 
 	}
 }
 
 	//http://simonpstevens.com/articles/vectorcollisionphysics
-var calcMomentum = function(c1, c2, d) {
-	if (d<3) {
-
-		return
-	};
+var collide = function(c1, c2, d) {
+	if (d < 3) {return}
+	var cd = c1.r + c2.r;
+	var msac = moveToCollisionPoint(c1, c2, d, cd)
 	var norm = [(c1.x - c2.x)/d, (c1.y - c2.y)/d];
 	var coll = [-norm[1], norm[0]];
 
@@ -245,6 +244,44 @@ var calcMomentum = function(c1, c2, d) {
 	c1.speedY = v1a[1];
 	c2.speedX = v2a[0];
 	c2.speedY = v2a[1];
+
+	c1.x = c1.x + c1.speedX * msac;
+	c1.y = c1.y + c1.speedY * msac;
+	c2.x = c2.x + c2.speedX * msac;
+	c2.y = c2.y + c2.speedY * msac;
+
+}
+
+var moveToCollisionPoint = function(c1, c2, d, cd) {
+
+	var c1s_x = c1.x - c1.speedX * delta;
+	var c1s_y = c1.y - c1.speedY* delta;
+
+	var c2s_x = c2.x - c2.speedX * delta;
+	var c2s_y = c2.y - c2.speedY* delta;
+
+	var dx = c1s_x - c2s_x;
+	var dy = c1s_y - c2s_y;
+	var dafs = Math.sqrt(dx * dx + dy * dy);
+
+	var dtd = d - dafs;
+	var ddtc = cd - dafs;
+
+	var pdtc = ddtc/dtd;
+	var pdac = 1 - pdtc;
+
+	var mstc = delta * pdtc;
+	var msac = delta * pdac;
+
+	c1.x = c1s_x + c1.speedX * mstc;
+	c1.y = c1s_y + c1.speedY * mstc;
+
+	c2.x = c2s_x + c2.speedX * mstc;
+	c2.y = c2s_y + c2.speedY * mstc;
+
+	return msac;
+
+
 }
 
 var addBalls = function() {
