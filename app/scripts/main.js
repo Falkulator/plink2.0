@@ -208,20 +208,36 @@ var checkCollision = function(circle1, circle2) {
 	var dx = circle1.x - circle2.x;
 	var dy = circle1.y - circle2.y;
 	var distance = Math.sqrt(dx * dx + dy * dy);
-
-	if (distance < circle1.r+ circle2.r) {
-		collide(circle1, circle2, distance);
+	var cd = circle1.r + circle2.r;
+	if (distance <= cd) {
+		collide(circle1, circle2, distance, cd);
 
 	}
 }
 
+	
+var collide = function(c1, c2, d, cd) {
+	if (d==0){
+		return;
+	}
+
+
 	//http://simonpstevens.com/articles/vectorcollisionphysics
-var collide = function(c1, c2, d) {
-	if (d < 1) {return}
-	var cd = c1.r + c2.r;
-	var msac = moveToCollisionPoint(c1, c2, d, cd)
+	//var msac = moveToCollisionPoint(c1, c2, d, cd)
 	var norm = [(c1.x - c2.x)/d, (c1.y - c2.y)/d];
 	var coll = [-norm[1], norm[0]];
+	//move overlapping balls
+	var dcd = cd -d;
+	if (c1.m <= c2.m) {
+		c1.x += norm[0] * dcd;
+		c1.y += norm[1] * dcd;
+
+	} 
+	else {
+		c2.x -= norm[0] * dcd;
+		c2.y -= norm[1] * dcd;
+	}
+
 
 	var cn1 = dotproduct(norm, [c1.speedX, c1.speedY])
 	var cn2 = dotproduct(norm, [c2.speedX, c2.speedY])
@@ -245,44 +261,15 @@ var collide = function(c1, c2, d) {
 	c2.speedX = v2a[0];
 	c2.speedY = v2a[1];
 
-	c1.x = c1.x + c1.speedX * msac;
-	c1.y = c1.y + c1.speedY * msac;
-	c2.x = c2.x + c2.speedX * msac;
-	c2.y = c2.y + c2.speedY * msac;
+	// c1.x = c1.x + c1.speedX * msac;
+	// c1.y = c1.y + c1.speedY * msac;
+	// c2.x = c2.x + c2.speedX * msac;
+	// c2.y = c2.y + c2.speedY * msac;
 
 }
 
-var moveToCollisionPoint = function(c1, c2, d, cd) {
-
-	var c1s_x = c1.x - c1.speedX * delta;
-	var c1s_y = c1.y - c1.speedY* delta;
-
-	var c2s_x = c2.x - c2.speedX * delta;
-	var c2s_y = c2.y - c2.speedY* delta;
-
-	var dx = c1s_x - c2s_x;
-	var dy = c1s_y - c2s_y;
-	var dafs = Math.sqrt(dx * dx + dy * dy);
-
-	var dtd = d - dafs;
-	var ddtc = cd - dafs;
-
-	var pdtc = ddtc/dtd;
-	var pdac = 1 - pdtc;
-
-	var mstc = delta * pdtc;
-	var msac = delta * pdac;
-
-	// c1.x = c1s_x + c1.speedX * mstc;
-	// c1.y = c1s_y + c1.speedY * mstc;
-
-	// c2.x = c2s_x + c2.speedX * mstc;
-	// c2.y = c2s_y + c2.speedY * mstc;
-
-	return msac;
 
 
-}
 
 var addBalls = function() {
 	// add 10 at a time :)
@@ -292,7 +279,7 @@ var addBalls = function() {
 
 			for (var i = 0; i < amount; i++) 
 			{
-				var ball = new Ball(20, 20, 5 + Math.random() * 10);
+				var ball = new Ball(20, 20, 2 + Math.random() * 8);
 
 				balls.push(ball);
 

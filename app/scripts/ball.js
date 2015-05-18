@@ -6,7 +6,7 @@ function Ball(x,y,r) {
 	this.width = r*2;
 	this.height = r*2;
 	this.r = r;
-	this.m = 10;
+	this.m = r/10;
 	this.speedX = -15 + Math.random() * 30;
 	this.speedY = -15 + Math.random() * 30;
 	
