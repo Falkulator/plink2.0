@@ -1,8 +1,8 @@
 function Ball(x,y,r) {
 	PIXI.Sprite.call(this, balltex);
 	
-	this.x = x + Math.random() * 350;
-	this.y = y + Math.random() * 350;
+	this.x = x;
+	this.y = y;
 	this.width = r*2;
 	this.height = r*2;
 	this.r = r;
@@ -26,7 +26,7 @@ Ball.prototype.update = function() {
 	this.position.x += this.speedX * delta;
 	this.position.y += this.speedY * delta;
 	this.speedY += gravity * delta;
-	this.limitSpeed();
+	this.applyFriction();
 	if (this.position.x > maxX)
 	{
 		this.speedX *= -0.85;
@@ -52,6 +52,25 @@ Ball.prototype.update = function() {
 		this.speedY *= -0.85;
 		this.position.y = minY;
 	}
+
+}
+
+Ball.prototype.applyFriction = function() {
+	var friction = 0.0005;
+
+	if (this.speedX > 0) {
+		this.speedX -= friction;
+	}
+	else if (this.speedX < 0) {
+		this.speedX += friction;
+	}
+	else if (this.speedY > 0) {
+		this.speedY -= friction;
+	}
+	else if (this.speedY < 0) {
+		this.speedY += friction;
+	}
+	
 
 }
 

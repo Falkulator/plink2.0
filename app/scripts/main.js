@@ -27,28 +27,24 @@ var container;
 var lastTime = (new Date()).getTime();
 var currentTime = 0;
 var delta = 0;
+var currentMousePos = { x: -1, y: -1 };
 
 
-var amount = 10;
+var amount = 1;
 var myTree;
 
 function onReady()
 {
+	
+	
+	renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, {backgroundColor:0x000000});
+
 	myTree = new Quadtree({
 	    x: 0,
 	    y: 0,
-	    width: 800,
-	    height: 600
-	}, 5, 8);
-	
-	renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor:0x000000});
-	//stage = new PIXI.Stage(0x000000);
-	//stage.filterArea = new PIXI.math.Rectangle(0, 0, 800 ,600);
-
-	//amount = (renderer instanceof PIXI.WebGLRenderer) ? 100 : 5;
-//	
-//	bloom = new PIXI.filters.BloomFilter();
-	//stage.filters = [bloom];
+	    width: renderer.width,
+	    height: renderer.height
+	}, 5, 12);
 
 	if(amount == 5)
 	{
@@ -78,13 +74,11 @@ function onReady()
 
 	
 	count = startballCount;
-	counter.innerHTML = count + " Balls lol";
+	counter.innerHTML = count + " Balls";
 	
 	
 	container = new PIXI.Container();
-	//container = new PIXI.ParticleContainer(200000, [false, true, false, false, false]);
-	//stage.addChild(container);
-	//var filter = new PIXI.filters.ColorMatrixFilter();
+
 
 	balltex = new PIXI.Texture(ballTexture.baseTexture, new PIXI.math.Rectangle(0, 0, 50, 50));
 	
@@ -93,7 +87,9 @@ function onReady()
 
 	for (var i = 0; i < startballCount; i++) 
 	{
-		var ball = new Ball(20,20,25);
+		var x = Math.floor(Math.random() * renderer.width);
+		var y = Math.floor(Math.random() * renderer.height);
+		var ball = new Ball(x,y,25);
 
 		balls.push(ball);
 
@@ -106,19 +102,29 @@ function onReady()
 	}
 	
 	
-	$(renderer.view).mousedown(function(e){
-		//console.log(e.offsetX)
+	$(renderer.view).mousedown(function(event){
+		currentMousePos.x = event.pageX;
+  		currentMousePos.y = event.pageY;
 		isAdding = true;
 	});
 	
-	$(renderer.view).mouseup(function(){
+	$(renderer.view).mouseup(function(event){
 
-
+		currentMousePos.x = event.pageX;
+  		currentMousePos.y = event.pageY;
 		isAdding = false;
+	})
+	
+	$(renderer.view).mousemove(function(event){
+
+		currentMousePos.x = event.pageX;
+  		currentMousePos.y = event.pageY;
+
 	})
 	
 	document.addEventListener("touchstart", onTouchStart, true);
 	document.addEventListener("touchend", onTouchEnd, true);
+	document.addEventListener("touchmove", onTouchMove, true);
 	
 	
 	resize();
@@ -127,13 +133,19 @@ function onReady()
 function onTouchStart(event)
 {
 	isAdding = true;
+	currentMousePos.x = event.pageX;
+  	currentMousePos.y = event.pageY;
+}
+
+function onTouchMove(event){
+  currentMousePos.x = event.pageX;
+  currentMousePos.y = event.pageY;
 }
 
 function onTouchEnd(event)
 {
-	ballType++
-	ballType %= 5;
-	currentTexture = ballTextures[ballType];
+	currentMousePos.x = event.pageX;
+  	currentMousePos.y = event.pageY;
 
 	isAdding = false;
 }
@@ -144,8 +156,7 @@ function resize()
 	var width = $(window).width(); 
 	var height = $(window).height(); 
 	
-	if(width > 800)width  = 800;
-	if(height > 600)height = 600;
+
 	
 	maxX = width;
 	minX = 0;
@@ -162,7 +173,9 @@ function resize()
 	stats.domElement.style.top = h + "px";
 	
 	counter.style.left = w + "px";
-	counter.style.top = h + 49 + "px";
+	counter.style.top = h + 48 + "px";
+	counter.style.color = "#fff";
+	counter.style.position = "absolute";
 
 	
 
@@ -272,18 +285,18 @@ var collide = function(c1, c2, d, cd) {
 
 
 var addBalls = function() {
-	// add 10 at a time :)
 		
-		if(count < 200000)
+		if(count < 20000)
 		{
 
 			for (var i = 0; i < amount; i++) 
 			{
-				var ball = new Ball(20, 20, 2 + Math.random() * 8);
+
+				var ball = new Ball(currentMousePos.x, currentMousePos.y, 2 + Math.random() * 4);
 
 				balls.push(ball);
 
-				container.addChild(ball)//, random);
+				container.addChild(ball);
 				
 				count++;
 			}
