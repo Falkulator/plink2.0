@@ -1,19 +1,20 @@
-function Ball(x,y,r) {
-	PIXI.Sprite.call(this, balltex);
+function Ball(x,y,r,tex) {
+	PIXI.Sprite.call(this, tex);
 	
 	this.x = x;
 	this.y = y;
 	this.width = r*2;
 	this.height = r*2;
 	this.r = r;
-	this.m = r/10;
-	this.speedX = -15 + Math.random() * 30;
-	this.speedY = -15 + Math.random() * 30;
+	this.m = r/100;
+	this.vx = -2 + Math.random() * 4;
+	this.vy = -2 + Math.random() * 4;
+	this.remove = false;
 	
 	this.anchor.x = 0.5;
 	this.anchor.y = 0.5;
 	this.alpha = 0.3 + Math.random() * 0.7;
-	this.scale.set(r/25)
+	this.scale.set(r/25);
 
 }
 
@@ -22,70 +23,120 @@ Ball.prototype.cunstructor = Ball;
 
 Ball.prototype.update = function() {
 
+	var wallDaming = Game.wallDamping;
+	this.position.x += this.vx * delta;
+	this.position.y += this.vy * delta;
+
+	this.vy += Game.gravity * delta;
 	
-	this.position.x += this.speedX * delta;
-	this.position.y += this.speedY * delta;
-	this.speedY += gravity * delta;
+	
 	this.applyFriction();
-	if (this.position.x > maxX)
+
+//TODO: thid causes overlap. add momentum to walls
+	if (this.position.x + this.r > Game.width)
 	{
-		this.speedX *= -0.85;
-		this.position.x = maxX;
+		this.vx *= wallDaming;
+		this.position.x = Game.width - this.r;
 	}
-	else if (this.position.x < minX)
+	else if (this.position.x - this.r < 0)
 	{
-		this.speedX *= -1;
-		this.position.x = minX;
+		this.vx *= wallDaming;
+		this.position.x = 0 + this.r;
 	}
 	
-	if (this.position.y > maxY)
+	if (this.position.y + this.r > Game.height)
 	{
-		this.speedY *= -0.85;
-		this.position.y = maxY;
-		if (Math.random() > 0.3)
-		{
-			this.speedY -= Math.random() * 6;
-		}
+		this.vy *= wallDaming;
+		this.position.y = Game.height - this.r;
+		// if (Math.random() > 0.3)
+		// {
+		// 	this.vy -= Math.random() * 6;
+		// }
 	} 
-	else if (this.position.y < minY)
+	else if (this.position.y - this.r< 0)
 	{
-		this.speedY *= -0.85;
-		this.position.y = minY;
+		this.vy *= wallDaming;
+		this.position.y = 0+ this.r;
+	}
+
+	if (this.r < 0.6) {
+		this.remove = true;
+
 	}
 
 }
 
 Ball.prototype.applyFriction = function() {
-	var friction = 0.0005;
+	//NOTE: limit ball movment to one direction game mechanic?
+	if (Game.friction) {
+		var f = 0.9950;
+	}
+	else {
+		var f = 0.9997;
+	}
+	this.vx *= f;
+	this.vy *= f;
 
-	if (this.speedX > 0) {
-		this.speedX -= friction;
-	}
-	else if (this.speedX < 0) {
-		this.speedX += friction;
-	}
-	else if (this.speedY > 0) {
-		this.speedY -= friction;
-	}
-	else if (this.speedY < 0) {
-		this.speedY += friction;
-	}
-	
 
 }
 
-Ball.prototype.limitSpeed = function() {
-	var max = 250;
-	if (this.speedX > max) {
-		this.speedX = max;
+
+Ball.prototype.repel = function() {
+	var c = 300;
+	var dx = currentMousePos.x - this.x;
+	var dy = currentMousePos.y - this.y;
+	var r = Math.sqrt(dx * dx + dy * dy);
+	if (r < 350) {
+		this.vx -= c*dx/(r*r);
+		this.vy -= c*dy/(r*r);
 	}
-	if (this.speedX < -max) {
-		this.speedX = -max;
+}
+
+Ball.prototype.attract = function() {
+	var c = 300;
+	var dx = currentMousePos.x - this.x;
+	var dy = currentMousePos.y - this.y;
+	var r = Math.sqrt(dx * dx + dy * dy);
+	
+	this.vx += c*dx/(r*r);
+	this.vy += c*dy/(r*r);
+
+}
+
+Ball.prototype.vacuum = function() {
+	var c = 600;
+	var dx = currentMousePos.x - this.x;
+	var dy = currentMousePos.y - this.y;
+	var r = Math.sqrt(dx * dx + dy * dy);
+	
+	this.vx += c*dx/(r*r);
+	this.vy += c*dy/(r*r);
+
+	var distance = Math.sqrt(dx * dx + dy * dy);
+	if (distance < 10) {
+		this.remove = true;
 	}
-	if (this.speedY < -max) {
-		this.speedY = -max;
-	}
-	if (this.speedY > max) {
-		this.speedY = max;
+
+}
+
+Ball.prototype.split = function() {
+	var dx = this.position.x - currentMousePos.x;
+	var dy = this.position.y - currentMousePos.y;
+	var distance = Math.sqrt(dx * dx + dy * dy);
+	if (distance < this.r) {
+		var ball = new Ball(this.position.x,this.position.y,this.r/2,balltex);
+		ball.vx = this.vx;
+		ball.vy = this.vy;
+		balls.push(ball);
+		container.addChild(ball);
+
+		var ball = new Ball(this.position.x,this.position.y,this.r/2,balltex);
+		ball.vx = this.vx;
+		ball.vy = -this.vy;
+		balls.push(ball);
+		container.addChild(ball);
+
+		count += 2;
+		this.remove = true;
 	}
 }
