@@ -32,6 +32,7 @@ Input.init = function() {
 		cursorType %= 6;
 		Game.currentCursor = cursorTypes[cursorType];
 		Game.activeBall = undefined;
+		Ui.update(); 
 	};
 
 	var gKey = keyboard(71);
@@ -44,7 +45,7 @@ Input.init = function() {
   		
 	};
 	gKey.release = function() {
-	  
+	  Ui.update(); 
 	};
 
 	var fKey = keyboard(70);
@@ -52,7 +53,7 @@ Input.init = function() {
 		Game.friction = !Game.friction;
 	};
 	fKey.release = function() {
-	  
+	  Ui.update(); 
 	};
 	
 	

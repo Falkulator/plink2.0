@@ -123,10 +123,7 @@ function resize()
 	stats.domElement.style.left = w + "px";
 	stats.domElement.style.top = h + "px";
 	
-	counter.style.left = w + "px";
-	counter.style.top = h + 48 + "px";
-	counter.style.color = "#fff";
-	counter.style.position = "absolute";
+	Ui.update();
 
 	
 
@@ -315,7 +312,7 @@ var addBalls = function() {
 			}
 		}
 
-		counter.innerHTML = count + " Balls";
+		Ui.counter.innerHTML = count + " Balls";
 }
 
  function dotproduct(a,b) {
@@ -335,7 +332,7 @@ Game.preThrowBall = function() {
 		balls.push(this.activeBall);
 		container.addChild(this.activeBall);
 		count++;
-		counter.innerHTML = count + " Balls";
+		Ui.counter.innerHTML = count + " Balls";
 
 	}
 	if (!this.graphics) {
