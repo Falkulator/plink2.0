@@ -3,62 +3,48 @@ var Ui = {
 }
 
 Ui.init = function() {
-	//counter
-	this.counter = document.createElement("div");
-	this.counter.className = "counter";
-	document.body.appendChild(this.counter);
 
+	var css = {font: "15px Helvetica", 
+				fill: "#fff", 
+				align: "center", 
+				stroke: "#fff", 
+				strokeThickness: 0}
+	//counter
 	
 	count = startballCount;
-	this.counter.innerHTML = count + " Balls";
+	this.counter = new PIXI.Text(count + " Balls", css);
+	container.addChild(this.counter);
 
 	//cursor
-	this.cursor = document.createElement("div");
-	this.cursor.className = "cursor";
-	document.body.appendChild( this.cursor);
-
-	this.cursor.innerHTML = "[ ] " + Game.currentCursor;
+	this.cursor = new PIXI.Text("[  ] " + Game.currentCursor, css);
+	container.addChild(this.cursor);
 
 	//gravity
-	this.gravity = document.createElement("div");
-	this.gravity.className = "gravity";
-	document.body.appendChild( this.gravity);
-
-	this.gravity.innerHTML = "[g] " + Game.gravity;
+	this.gravity = new PIXI.Text("[g] " + Game.gravity, css);
+	container.addChild(this.gravity);
 
 	//friction
-	this.friction = document.createElement("div");
-	this.friction.className = "friction";
-	document.body.appendChild( this.friction);
-
-	this.friction.innerHTML = "[f] " + Game.friction;
+	this.friction = new PIXI.Text("[f] " + Game.friction, css);
+	container.addChild(this.friction);
 	
 }
 
 Ui.update = function() {
+	this.counter.position.x = 4;
+	this.counter.position.y = 50;
+	this.counter.text = count + " Balls";
 
-	this.counter.innerHTML = count + " Balls";
-	this.cursor.innerHTML = "[ ] " + Game.currentCursor;
-	this.gravity.innerHTML = "[g] " + Game.gravity;
-	this.friction.innerHTML = "[f] " + Game.friction;
+	this.cursor.position.x = 4;
+	this.cursor.position.y = 70;
+	this.cursor.text = "[  ] " + Game.currentCursor;
 
-	this.counter.style.left = 0 + "px";
-	this.counter.style.top = 48 + "px";
-	this.counter.style.color = "#fff";
-	this.counter.style.position = "absolute";
+	this.gravity.position.x = 4;
+	this.gravity.position.y = 90;
+	this.gravity.text = "[g] " + Game.gravity;
 
-	this.cursor.style.left = 0 + "px";
-	this.cursor.style.top = 70 + "px";
-	this.cursor.style.color = "#fff";
-	this.cursor.style.position = "absolute";
+	this.friction.position.x = 4;
+	this.friction.position.y = 110;
+	this.friction.text = "[f] " + Game.friction;
 
-	this.gravity.style.left = 0 + "px";
-	this.gravity.style.top = 90 + "px";
-	this.gravity.style.color = "#fff";
-	this.gravity.style.position = "absolute";
 
-	this.friction.style.left = 0 + "px";
-	this.friction.style.top = 110 + "px";
-	this.friction.style.color = "#fff";
-	this.friction.style.position = "absolute";
 }

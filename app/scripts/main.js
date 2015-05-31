@@ -79,9 +79,9 @@ function onReady()
 	aimTexture = new PIXI.Texture.fromImage("images/aim.png")
 
 
-	Ui.init();	
+	
 	container = new PIXI.Container();
-
+	Ui.init();	
 
 	balltex = new PIXI.Texture(ballTexture.baseTexture, new PIXI.math.Rectangle(0, 0, 50, 50));
 	aimtex = new PIXI.Texture(aimTexture.baseTexture, new PIXI.math.Rectangle(0, 0, 25, 25));
@@ -176,6 +176,7 @@ function update()
 			container.removeChild(ball);
 			balls.splice(i,1);
 			count --;
+			Ui.counter.text = count + " Balls";
 		}
 		if (isAdding && Game.currentCursor == 'split') {
 			ball.split();
@@ -312,7 +313,7 @@ var addBalls = function() {
 			}
 		}
 
-		Ui.counter.innerHTML = count + " Balls";
+		Ui.counter.text = count + " Balls";
 }
 
  function dotproduct(a,b) {
@@ -332,7 +333,7 @@ Game.preThrowBall = function() {
 		balls.push(this.activeBall);
 		container.addChild(this.activeBall);
 		count++;
-		Ui.counter.innerHTML = count + " Balls";
+		Ui.counter.text = count + " Balls";
 
 	}
 	if (!this.graphics) {
